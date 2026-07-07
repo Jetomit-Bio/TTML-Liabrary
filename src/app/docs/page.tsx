@@ -7,10 +7,10 @@ export default function DocsPage() {
       {/* Background radial glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[350px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none z-0" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-16">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
         
         {/* Navigation / Header */}
-        <header className="flex justify-between items-center mb-12 border-b border-neutral-900 pb-6">
+        <header className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 mb-12 border-b border-neutral-900 pb-6 text-center sm:text-left">
           <Link href="/" className="flex items-center gap-3 group">
             <img src="/ttmllogo.svg" alt="TTMLLIB Logo" className="w-10 h-10 object-contain transition-transform group-hover:scale-105" />
             <span className="text-xl font-black tracking-wider text-white">TTMLLIB <span className="text-indigo-500">API</span></span>
@@ -192,6 +192,18 @@ export default function DocsPage() {
                     <td className="p-3">string</td>
                     <td className="p-3">Filter results by album name</td>
                   </tr>
+                  <tr>
+                    <td className="p-3 font-semibold font-mono text-neutral-200">verified</td>
+                    <td className="p-3 text-neutral-500">false</td>
+                    <td className="p-3">string / boolean</td>
+                    <td className="p-3">Filter by verified status. Acceptable values: <code className="font-mono text-indigo-400">1</code> or <code className="font-mono text-indigo-400">true</code> (only verified tracks), <code className="font-mono text-indigo-400">0</code> or <code className="font-mono text-indigo-400">false</code> (only unverified tracks)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-semibold font-mono text-neutral-200">distributor</td>
+                    <td className="p-3 text-neutral-500">false</td>
+                    <td className="p-3">string</td>
+                    <td className="p-3">Filter by distributor name (case-insensitive, exact match)</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -211,7 +223,9 @@ export default function DocsPage() {
     "instrumental": false,
     "plainLyrics": "Cigarety a milión slov...",
     "syncedLyrics": "[00:17.52] Cigarety a milión slov...",
-    "lyricsTtml": "<tt>...</tt>"
+    "lyricsTtml": "<tt>...</tt>",
+    "isVerified": true,
+    "distributor": "SudoAPP"
   }
 ]`}
               </pre>

@@ -56,7 +56,7 @@ export default async function LyricsPage({ params }: PageProps) {
 
   try {
     const [rows] = await pool.execute<Track[]>(
-      `SELECT id, title, artist, album, duration, type, lyrics, distributor, duration_seconds, youtube_id, lyrics_ttml 
+      `SELECT id, title, artist, album, duration, type, lyrics, distributor, duration_seconds, youtube_id, lyrics_ttml, is_verified 
        FROM tracks WHERE id = ?`,
       [trackId]
     );

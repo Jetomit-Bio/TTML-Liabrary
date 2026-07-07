@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
   const trackName = searchParams.get("track_name");
   const artistName = searchParams.get("artist_name");
   const albumName = searchParams.get("album_name");
+  const verified = searchParams.get("verified");
+  const distributor = searchParams.get("distributor");
 
   if (!q && !trackName) {
     return NextResponse.json(
@@ -26,7 +28,7 @@ export async function GET(request: NextRequest) {
   try {
     // 1. Query local database
     let querySql = `
-      SELECT id, title, artist, album, duration, type, lyrics, distributor, duration_seconds, youtube_id, lyrics_ttml 
+      SELECT id, title, artist, album, duration, type, lyrics, distributor, duration_seconds, youtube_id, lyrics_ttml, is_verified 
       FROM tracks 
       WHERE 1=1
     `;
@@ -53,7 +55,18 @@ export async function GET(request: NextRequest) {
       queryParams.push(`%${albumName.trim().toLowerCase()}%`);
     }
 
-    querySql += ` LIMIT 20`;
+    if (verified !== null) {
+      const isVerifiedVal = (verified === "1" || verified === "true") ? 1 : 0;
+      querySql += ` AND is_verified = ?`;
+      queryParams.push(isVerifiedVal);
+    }
+
+    if (distributor) {
+      querySql += ` AND LOWER(distributor) = ?`;
+      queryParams.push(distributor.trim().toLowerCase());
+    }
+
+    querySql += ` ORDER BY is_verified DESC LIMIT 20`;
 
     const [rows]: any = await pool.execute(querySql, queryParams);
 
@@ -82,13 +95,20 @@ export async function GET(request: NextRequest) {
         instrumental: false,
         plainLyrics,
         syncedLyrics,
-        lyricsTtml: track.lyrics_ttml || null
+        lyricsTtml: track.lyrics_ttml || null,
+        isVerified: track.is_verified === 1,
+        distributor: track.distributor || null
       };
     };
 
     if (rows.length > 0) {
       const results = rows.map(formatTrackResult);
       return NextResponse.json(results);
+    }
+
+    // If client requested specific local filters (verified or distributor), do not fall back to external LRCLIB
+    if (verified !== null || distributor) {
+      return NextResponse.json([]);
     }
 
     // 2. Query external LRCLIB Search API if no local results are found
@@ -132,7 +152,9 @@ export async function GET(request: NextRequest) {
       instrumental: item.instrumental || false,
       plainLyrics: item.plainLyrics || "",
       syncedLyrics: item.syncedLyrics || "",
-      lyricsTtml: null
+      lyricsTtml: null,
+      isVerified: false,
+      distributor: null
     }));
 
     return NextResponse.json(results);

@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   try {
     // 1. Try local lookup first
     const [rows]: any = await pool.execute(
-      `SELECT id, title, artist, album, duration, type, lyrics, distributor, duration_seconds, youtube_id, lyrics_ttml 
+      `SELECT id, title, artist, album, duration, type, lyrics, distributor, duration_seconds, youtube_id, lyrics_ttml, is_verified 
        FROM tracks 
        WHERE LOWER(title) = LOWER(?) 
          AND LOWER(artist) = LOWER(?) 
@@ -74,7 +74,9 @@ export async function GET(request: NextRequest) {
         instrumental: false,
         plainLyrics,
         syncedLyrics,
-        lyricsTtml: track.lyrics_ttml || null
+        lyricsTtml: track.lyrics_ttml || null,
+        isVerified: track.is_verified === 1,
+        distributor: track.distributor || null
       });
     }
 
@@ -134,7 +136,9 @@ export async function GET(request: NextRequest) {
       instrumental: lrclibData.instrumental || false,
       plainLyrics: lrclibData.plainLyrics || "",
       syncedLyrics: lrclibData.syncedLyrics || "",
-      lyricsTtml: null // external cache has no native TTML
+      lyricsTtml: null, // external cache has no native TTML
+      isVerified: false,
+      distributor: null
     });
 
   } catch (error: any) {

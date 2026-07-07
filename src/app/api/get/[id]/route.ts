@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const pool = getDbPool();
     const [rows]: any = await pool.execute(
-      `SELECT id, title, artist, album, duration, type, lyrics, distributor, duration_seconds, youtube_id, lyrics_ttml 
+      `SELECT id, title, artist, album, duration, type, lyrics, distributor, duration_seconds, youtube_id, lyrics_ttml, is_verified 
        FROM tracks WHERE id = ?`,
       [trackId]
     );
@@ -67,7 +67,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       instrumental: false,
       plainLyrics,
       syncedLyrics,
-      lyricsTtml: track.lyrics_ttml || null
+      lyricsTtml: track.lyrics_ttml || null,
+      isVerified: track.is_verified === 1,
+      distributor: track.distributor || null
     });
   } catch (error: any) {
     console.error(`Database error in /api/get/${id}:`, error);

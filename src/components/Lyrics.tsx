@@ -19,9 +19,10 @@ export interface LineData {
 interface LyricsProps {
   lyrics: LineData[];
   currentTime: number; // aktuálny čas prehrávača v sekundách
+  onSeek?: (time: number) => void;
 }
 
-// --- KOMPONENTA PRE JEDNO SLOVO ---
+// --- JEDNOTLIVÉ SLOVO ---
 const Word = ({ word, currentTime }: { word: WordData; currentTime: number }) => {
   const { text, startTime, endTime } = word;
   
@@ -52,7 +53,7 @@ const Word = ({ word, currentTime }: { word: WordData; currentTime: number }) =>
 };
 
 // --- HLAVNÁ KOMPONENTA PRE TEXTY ---
-export default function Lyrics({ lyrics, currentTime }: LyricsProps) {
+export default function Lyrics({ lyrics, currentTime, onSeek }: LyricsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const activeLineRef = useRef<HTMLDivElement>(null);
 
@@ -69,7 +70,7 @@ export default function Lyrics({ lyrics, currentTime }: LyricsProps) {
   return (
     <div 
       ref={containerRef}
-      className="w-full h-full max-h-[600px] overflow-y-auto no-scrollbar px-6 py-20 flex flex-col gap-8"
+      className="w-full h-full max-h-[600px] overflow-y-auto no-scrollbar px-4 sm:px-6 py-10 sm:py-16 md:py-20 flex flex-col gap-6 sm:gap-8"
       style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
     >
       {lyrics.map((line) => {
@@ -81,7 +82,8 @@ export default function Lyrics({ lyrics, currentTime }: LyricsProps) {
           <div
             key={line.id}
             ref={isActive ? activeLineRef : null}
-            className={`transition-all duration-500 ease-out transform origin-left ${
+            onClick={() => onSeek && onSeek(line.startTime)}
+            className={`cursor-pointer transition-all duration-300 ease-out transform origin-left hover:opacity-90 hover:scale-[1.01] ${
               isActive 
                 ? 'scale-105 opacity-100 blur-none' 
                 : 'scale-100 opacity-40 blur-[1px]' // Apple Music efekt rozmazania neaktívnych riadkov

@@ -58,17 +58,17 @@ function SearchResultsContent() {
       </button>
 
       {/* Horný Search Bar na stránke výsledkov */}
-      <div className="flex items-center gap-4 mb-10 w-full max-w-3xl">
+      <div className="flex items-center gap-2 sm:gap-4 mb-10 w-full max-w-3xl">
         {/* Small branding logo */}
         <div className="shrink-0 cursor-pointer" onClick={() => router.push("/")}>
           <img
             src="/ttmllogo.svg"
             alt="TTMLLIB Logo"
-            className="w-12 h-12 object-contain hover:scale-105 transition-transform"
+            className="w-9 h-9 sm:w-12 sm:h-12 object-contain hover:scale-105 transition-transform"
           />
         </div>
         
-        <div className="flex-grow bg-neutral-900/90 backdrop-blur-md rounded-full flex items-center p-1.5 shadow-lg border border-neutral-800 focus-within:border-indigo-500/80 transition-all duration-200">
+        <div className="flex-grow bg-neutral-900/90 backdrop-blur-md rounded-full flex items-center p-1 sm:p-1.5 shadow-lg border border-neutral-800 focus-within:border-indigo-500/80 transition-all duration-200">
           <input
             type="text"
             value={searchInput}
@@ -76,12 +76,12 @@ function SearchResultsContent() {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSearchSubmit();
             }}
-            className="flex-grow bg-transparent text-white px-6 py-2 focus:outline-none text-lg placeholder-neutral-500"
+            className="flex-grow bg-transparent text-white px-4 sm:px-6 py-1.5 sm:py-2 focus:outline-none text-base sm:text-lg placeholder-neutral-500"
             autoComplete="off"
           />
           <button
             onClick={handleSearchSubmit}
-            className="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white rounded-full p-3 transition-all duration-200 hover:scale-105"
+            className="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white rounded-full p-2.5 sm:p-3 transition-all duration-200 hover:scale-105"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -111,8 +111,16 @@ function SearchResultsContent() {
                 className="bg-neutral-900/60 backdrop-blur-sm border border-neutral-800/80 rounded-xl p-5 flex justify-between items-center hover:bg-neutral-800/50 hover:border-neutral-700 transition-all duration-250 cursor-pointer shadow-md group block"
               >
                 <div className="flex-grow">
-                  <h3 className="text-white font-bold text-lg leading-tight mb-1 group-hover:text-indigo-300 transition-colors">
-                    {track.title}
+                  <h3 className="text-white font-bold text-lg leading-tight mb-1 group-hover:text-indigo-300 transition-colors flex items-center gap-1.5">
+                    <span>{track.title}</span>
+                    {track.is_verified === 1 && (
+                      <span className="w-5 h-5 shrink-0 inline-block" title="Verified Track">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false" aria-hidden="true" style={{ pointerEvents: 'none', display: 'inherit', width: '100%', height: '100%' }}>
+                          <path d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1Z" fill="white" />
+                          <path d="M17.707 8.293a1 1 0 010 1.414L10 17.414l-3.707-3.707a1 1 0 111.414-1.414L10 14.586l6.293-6.293a1 1 0 011.414 0Z" fill="black" />
+                        </svg>
+                      </span>
+                    )}
                   </h3>
                   <div className="flex items-center gap-2 mb-1.5">
                     <span className="bg-indigo-950/80 border border-indigo-900/60 text-indigo-300 text-xs font-bold px-2.5 py-0.5 rounded-full">

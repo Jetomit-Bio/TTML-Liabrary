@@ -18,7 +18,7 @@ export default function AddPage() {
       {/* Background radial glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[350px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none z-0" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-16">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
         
         {/* Back Button */}
         <Link
@@ -46,7 +46,7 @@ export default function AddPage() {
             href="https://sudoapp.pro"
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex flex-col items-center justify-between text-center bg-neutral-900/30 hover:bg-neutral-900/60 backdrop-blur-md border border-neutral-900 hover:border-indigo-500/40 p-8 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-900/10 hover:scale-[1.03] overflow-hidden"
+            className="group relative flex flex-col items-center justify-between text-center bg-neutral-900/30 hover:bg-neutral-900/60 backdrop-blur-md border border-neutral-900 hover:border-indigo-500/40 p-6 sm:p-8 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-900/10 hover:scale-[1.03] overflow-hidden"
           >
             {/* Hover card glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 via-indigo-500/0 to-indigo-500/5 group-hover:to-indigo-500/10 transition-all duration-300" />
@@ -95,6 +95,11 @@ export default function AddPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </button>
+          <div className="pt-2">
+            <Link href="/terms/distributor" className="text-neutral-500 hover:text-white text-xs transition-colors underline">
+              Distributor Terms of Service
+            </Link>
+          </div>
         </div>
 
       </div>
@@ -146,16 +151,16 @@ export default function AddPage() {
             </div>
 
             {/* Footer Buttons */}
-            <div className="flex gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <a
                 href="mailto:hello@jetomit.bio"
-                className="flex-1 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-center text-white py-3 rounded-xl font-bold uppercase tracking-wider text-xs transition-all hover:scale-[1.02] shadow-lg shadow-indigo-600/15 flex items-center justify-center"
+                className="w-full sm:flex-1 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-center text-white py-3 rounded-xl font-bold uppercase tracking-wider text-xs transition-all hover:scale-[1.02] shadow-lg shadow-indigo-600/15 flex items-center justify-center"
               >
                 Send Email
               </a>
               <button
                 onClick={() => setShowContactModal(false)}
-                className="flex-1 bg-neutral-950 hover:bg-neutral-900 border border-neutral-850 text-neutral-350 hover:text-white py-3 rounded-xl font-bold uppercase tracking-wider text-xs transition-all cursor-pointer"
+                className="w-full sm:flex-1 bg-neutral-950 hover:bg-neutral-900 border border-neutral-850 text-neutral-350 hover:text-white py-3 rounded-xl font-bold uppercase tracking-wider text-xs transition-all cursor-pointer"
               >
                 Close
               </button>

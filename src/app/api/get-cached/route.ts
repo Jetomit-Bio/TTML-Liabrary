@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     const pool = getDbPool();
     // Query database for case-insensitive match on track signature within +/- 2s duration
     const [rows]: any = await pool.execute(
-      `SELECT id, title, artist, album, duration, type, lyrics, distributor, duration_seconds, youtube_id, lyrics_ttml 
+      `SELECT id, title, artist, album, duration, type, lyrics, distributor, duration_seconds, youtube_id, lyrics_ttml, is_verified 
        FROM tracks 
        WHERE LOWER(title) = LOWER(?) 
          AND LOWER(artist) = LOWER(?) 
@@ -85,7 +85,9 @@ export async function GET(request: NextRequest) {
       instrumental: false,
       plainLyrics,
       syncedLyrics,
-      lyricsTtml: track.lyrics_ttml || null
+      lyricsTtml: track.lyrics_ttml || null,
+      isVerified: track.is_verified === 1,
+      distributor: track.distributor || null
     });
   } catch (error: any) {
     console.error("Database error in /api/get-cached:", error);

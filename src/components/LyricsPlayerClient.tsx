@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Lyrics, { LineData } from "@/components/Lyrics";
 import { Track } from "@/app/actions";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface LyricsPlayerClientProps {
   track: Track;
@@ -131,7 +132,7 @@ export default function LyricsPlayerClient({ track, lyrics }: LyricsPlayerClient
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isPlaying, track.youtube_id, duration]);
+  }, [isPlaying, track.youtube_id, duration, currentTime]);
 
   const handlePlayPause = () => {
     if (track.youtube_id && playerRef.current) {
@@ -151,6 +152,14 @@ export default function LyricsPlayerClient({ track, lyrics }: LyricsPlayerClient
     
     if (track.youtube_id && playerRef.current && typeof playerRef.current.seekTo === "function") {
       playerRef.current.seekTo(val, true);
+    }
+  };
+
+  const handleSeek = (time: number) => {
+    setCurrentTime(time);
+    
+    if (track.youtube_id && playerRef.current && typeof playerRef.current.seekTo === "function") {
+      playerRef.current.seekTo(time, true);
     }
   };
 
@@ -182,7 +191,7 @@ export default function LyricsPlayerClient({ track, lyrics }: LyricsPlayerClient
   };
 
   return (
-    <div className="relative z-10 max-w-6xl mx-auto px-6 py-12 min-h-screen flex flex-col">
+    <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 min-h-screen flex flex-col">
       {/* Back Button */}
       <button
         onClick={() => router.back()}
@@ -195,10 +204,10 @@ export default function LyricsPlayerClient({ track, lyrics }: LyricsPlayerClient
       </button>
 
       {/* Grid Layout: Left Metadata & Video Player, Right Synced Lyrics */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch flex-grow">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:gap-12 items-stretch flex-grow">
         
         {/* Left Column: Metadata & Audio/Video Control */}
-        <div className="lg:col-span-5 flex flex-col justify-between space-y-8 bg-neutral-900/40 backdrop-blur-md border border-neutral-800 p-8 rounded-2xl">
+        <div className="lg:col-span-5 flex flex-col justify-between space-y-6 sm:space-y-8 bg-neutral-900/40 backdrop-blur-md border border-neutral-800 p-5 sm:p-6 md:p-8 rounded-2xl">
           
           <div className="space-y-6">
             {/* Header info */}
@@ -206,7 +215,17 @@ export default function LyricsPlayerClient({ track, lyrics }: LyricsPlayerClient
               <span className="bg-indigo-950/80 border border-indigo-900/50 text-indigo-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                 {track.type} Lyrics
               </span>
-              <h1 className="text-4xl font-black text-white mt-4 tracking-tight leading-tight">{track.title}</h1>
+              <h1 className="text-4xl font-black text-white mt-4 tracking-tight leading-tight flex items-center gap-2 flex-wrap">
+                <span>{track.title}</span>
+                {track.is_verified === 1 && (
+                  <span className="w-6 h-6 shrink-0 inline-block" title="Verified Track">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false" aria-hidden="true" style={{ pointerEvents: 'none', display: 'inherit', width: '100%', height: '100%' }}>
+                      <path d="M12 1C5.925 1 1 5.925 1 12s4.925 11 11 11 11-4.925 11-11S18.075 1 12 1Z" fill="white" />
+                      <path d="M17.707 8.293a1 1 0 010 1.414L10 17.414l-3.707-3.707a1 1 0 111.414-1.414L10 14.586l6.293-6.293a1 1 0 011.414 0Z" fill="black" />
+                    </svg>
+                  </span>
+                )}
+              </h1>
               <p className="text-xl text-neutral-300 font-semibold mt-1">{track.artist}</p>
               {track.album && <p className="text-neutral-500 font-medium mt-0.5">Album: {track.album}</p>}
             </div>
@@ -216,7 +235,12 @@ export default function LyricsPlayerClient({ track, lyrics }: LyricsPlayerClient
               {track.distributor && (
                 <div className="flex justify-between">
                   <span>Distributor:</span>
-                  <span className="font-semibold text-neutral-200">{track.distributor}</span>
+                  <Link
+                    href={`/distributor/${encodeURIComponent(track.distributor)}`}
+                    className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                  >
+                    {track.distributor}
+                  </Link>
                 </div>
               )}
               <div className="flex justify-between">
@@ -227,10 +251,10 @@ export default function LyricsPlayerClient({ track, lyrics }: LyricsPlayerClient
 
             {/* Copy / Download TTML Actions */}
             {track.lyrics_ttml && (
-              <div className="border-t border-neutral-800/80 pt-6 flex gap-4">
+              <div className="border-t border-neutral-800/80 pt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button
                   onClick={handleCopy}
-                  className="flex-1 inline-flex items-center justify-center bg-neutral-950/60 hover:bg-neutral-900 border border-neutral-850 text-neutral-300 hover:text-white py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+                  className="w-full sm:flex-1 inline-flex items-center justify-center bg-neutral-950/60 hover:bg-neutral-900 border border-neutral-850 text-neutral-300 hover:text-white py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 hover:scale-[1.02] cursor-pointer"
                 >
                   {copied ? (
                     <>
@@ -250,7 +274,7 @@ export default function LyricsPlayerClient({ track, lyrics }: LyricsPlayerClient
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="flex-1 inline-flex items-center justify-center bg-indigo-650 hover:bg-indigo-600 active:bg-indigo-750 text-white py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 hover:scale-[1.02] shadow-md shadow-indigo-650/15 cursor-pointer"
+                  className="w-full sm:flex-1 inline-flex items-center justify-center bg-indigo-650 hover:bg-indigo-600 active:bg-indigo-750 text-white py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 hover:scale-[1.02] shadow-md shadow-indigo-650/15 cursor-pointer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -318,8 +342,8 @@ export default function LyricsPlayerClient({ track, lyrics }: LyricsPlayerClient
         </div>
 
         {/* Right Column: Synced Lyrics Component */}
-        <div className="lg:col-span-7 flex flex-col justify-center bg-neutral-900/20 border border-neutral-800/80 rounded-2xl shadow-xl overflow-hidden min-h-[500px]">
-          <Lyrics lyrics={lyrics} currentTime={currentTime} />
+        <div className="lg:col-span-7 flex flex-col justify-center bg-neutral-900/20 border border-neutral-800/80 rounded-2xl shadow-xl overflow-hidden min-h-[350px] sm:min-h-[450px] lg:min-h-[500px]">
+          <Lyrics lyrics={lyrics} currentTime={currentTime} onSeek={handleSeek} />
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ export interface Track extends RowDataPacket {
   duration: string;
   type: 'Plain' | 'Synced';
   lyrics: string | null;
+  is_verified?: number;
 }
 
 export async function searchTracks(query: string): Promise<Track[]> {
@@ -21,10 +22,10 @@ export async function searchTracks(query: string): Promise<Track[]> {
   
   const pool = getDbPool();
   try {
-    // Search in title, artist, or album
+    // Search in title, artist, or album, ordering by verified status first
     const searchPattern = `%${trimmed}%`;
     const [rows] = await pool.execute<Track[]>(
-      "SELECT id, title, artist, album, duration, type, lyrics FROM tracks WHERE title LIKE ? OR artist LIKE ? OR album LIKE ?",
+      "SELECT id, title, artist, album, duration, type, lyrics, is_verified FROM tracks WHERE title LIKE ? OR artist LIKE ? OR album LIKE ? ORDER BY is_verified DESC",
       [searchPattern, searchPattern, searchPattern]
     );
     return rows;

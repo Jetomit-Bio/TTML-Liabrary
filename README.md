@@ -156,4 +156,4 @@ Pushes a new lyric record into the database. Requires authorization.
 ---
 
 ## 📄 License
-This project is open-source and available under the MIT License.
+This project is licensed under a custom **Non-Commercial Use Only** license. See the [LICENSE](LICENSE) file for the full terms and restrictions.

@@ -57,14 +57,15 @@ CREATE TABLE IF NOT EXISTS `tracks` (
   `distributor` VARCHAR(255) NULL,
   `duration_seconds` INT DEFAULT 0,
   `youtube_id` VARCHAR(255) NULL,
-  `lyrics_ttml` TEXT NULL
+  `lyrics_ttml` TEXT NULL,
+  `is_verified` TINYINT(1) NOT NULL DEFAULT 0
 );
 
 -- Create api_keys table for distributor authentication
 CREATE TABLE IF NOT EXISTS `api_keys` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `api_key` VARCHAR(255) NOT NULL UNIQUE,
-  `description` VARCHAR(255) NULL,
+  `owner` VARCHAR(255) NOT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -106,17 +107,34 @@ Finds the best matching lyrics for a track. If not found in the local database, 
 - `album_name` (required, string)
 - `duration` (required, number, track duration in seconds, accepts ±2s)
 
+**Example Response:**
+```json
+{
+  "id": 1,
+  "trackName": "Song Title",
+  "artistName": "Artist Name",
+  "albumName": "Album Name",
+  "duration": 222,
+  "instrumental": false,
+  "plainLyrics": "Plain text lyrics...",
+  "syncedLyrics": "[00:10.50] Synced...",
+  "lyricsTtml": "<tt>...</tt>",
+  "isVerified": true,
+  "distributor": "SudoAPP"
+}
+```
+
 ---
 
 ### 2. Get cached lyrics
 `GET /api/get-cached`  
-Same query parameters as `/api/get`, but only searches the local database (never queries external sources).
+Same query parameters and response structure as `/api/get`, but only searches the local database (never queries external sources).
 
 ---
 
 ### 3. Get lyrics by ID
 `GET /api/get/[id]`  
-Retrieves a specific lyric record by its unique database ID.
+Retrieves a specific lyric record by its unique database ID. Same response structure as `/api/get`.
 
 ---
 
@@ -129,6 +147,10 @@ Search for lyrics using keywords.
 - `track_name` (string): Filter by track title.
 - `artist_name` (optional, string): Filter by artist name.
 - `album_name` (optional, string): Filter by album name.
+- `verified` (optional, string/boolean): Filter by verified status. Acceptable values: `1` or `true` (only verified tracks), `0` or `false` (only unverified tracks).
+- `distributor` (optional, string): Filter by distributor name (case-insensitive, exact match).
+
+*Note: If the `verified` or `distributor` parameter is provided, the API will not query or fall back to the external LRCLIB service.*
 
 ---
 

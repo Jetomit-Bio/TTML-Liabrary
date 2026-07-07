@@ -109,7 +109,7 @@ export default function Home() {
         {/* GitHub Open Source Button */}
         <div className="pt-8 flex justify-center w-full">
           <a
-            href="https://github.com/Jetomit-Bio/TTML-Liabrary"
+            href="https://github.com/TTML-Library/website"
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-2.5 bg-neutral-900 hover:bg-neutral-850 border border-white/[0.04] hover:border-white/[0.12] text-white px-6 py-3 rounded-2xl text-xs font-bold tracking-wider uppercase transition-all duration-300 shadow-lg shadow-black/40 hover:scale-[1.03] hover:shadow-indigo-500/5 cursor-pointer"

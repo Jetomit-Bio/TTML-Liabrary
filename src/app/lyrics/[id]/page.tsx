@@ -4,6 +4,7 @@ import { Track } from "@/app/actions";
 import { parseTtml } from "@/lib/ttmlParser";
 import LyricsPlayerClient from "@/components/LyricsPlayerClient";
 import type { Metadata } from "next";
+import { searchSpotifyTrack } from "@/lib/spotify";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -29,6 +30,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     const track = rows[0];
+
+    // Fetch Spotify cover image
+    let imageUrl = "/ttmllogo.png";
+    try {
+      const spotifyTrack = await searchSpotifyTrack(track.title, track.artist);
+      if (spotifyTrack?.album?.images?.length && spotifyTrack.album.images.length > 0) {
+        imageUrl = spotifyTrack.album.images[0].url;
+      }
+    } catch (err) {
+      console.error("Error fetching Spotify track image:", err);
+    }
+
     return {
       title: `${track.title} - ${track.artist} | TTMLLIB`,
       description: `Complete synced and plain text lyrics for "${track.title}" by ${track.artist} on TTMLLIB (The Open TTML Lyrics Database).`,
@@ -36,6 +49,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: `${track.title} - ${track.artist} | TTMLLIB`,
         description: `Complete synced and plain text lyrics for "${track.title}" by ${track.artist} on TTMLLIB.`,
         type: "music.song",
+        images: [
+          {
+            url: imageUrl,
+            alt: `${track.title} cover art`,
+          }
+        ]
+      },
+      twitter: {
+        card: "summary",
+        title: `${track.title} - ${track.artist} | TTMLLIB`,
+        description: `Complete synced and plain text lyrics for "${track.title}" by ${track.artist} on TTMLLIB.`,
+        images: [imageUrl],
       }
     };
   } catch (error) {

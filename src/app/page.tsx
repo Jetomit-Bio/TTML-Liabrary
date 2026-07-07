@@ -26,15 +26,46 @@ export default function Home() {
       {/* ========================================== */}
       <main className="relative z-10 flex flex-col items-center justify-center min-h-screen p-6 w-full max-w-3xl mx-auto transition-all duration-300 animate-fade-in">
         
+        {/* JSON-LD Structured Data for Search Engines & AI crawlers */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "TTMLLIB",
+              "url": "https://ttmllib.xyz",
+              "description": "The ultimate open-source TTML & LRC synchronized lyrics database and API, created by Jetomit-Bio.",
+              "author": {
+                "@type": "Person",
+                "name": "Jetomit-Bio",
+                "url": "https://github.com/Jetomit-Bio"
+              },
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://ttmllib.xyz/search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            })
+          }}
+        />
+
         {/* Logo bez pozadia */}
-        <div className="text-center mb-10 flex flex-col items-center">
-          <div className="w-32 h-32 mb-6 flex items-center justify-center cursor-pointer" onClick={() => router.push("/")}>
+        <div className="text-center mb-8 flex flex-col items-center">
+          <div className="w-28 h-28 mb-4 flex items-center justify-center cursor-pointer" onClick={() => router.push("/")}>
             <img
               src="/ttmllogo.svg"
               alt="TTMLLIB Logo"
-              className="w-32 h-32 object-contain transition-transform duration-300 hover:scale-105"
+              className="w-28 h-28 object-contain transition-transform duration-300 hover:scale-105"
             />
           </div>
+          <h1 className="text-4xl font-extrabold text-white tracking-tight">TTMLLIB</h1>
+          <p className="text-indigo-400 text-xs font-bold tracking-wider uppercase mt-1">
+            #1 Open TTML Synced Lyrics Database & API
+          </p>
+          <p className="text-neutral-500 text-xs mt-1">
+            Created by <a href="https://github.com/Jetomit-Bio" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-350 transition-colors underline">Jetomit-Bio</a>
+          </p>
         </div>
 
         {/* Search Bar */}
@@ -68,7 +99,9 @@ export default function Home() {
           <span className="text-neutral-800 text-xs hidden sm:inline">●</span>
           <a href="https://www.paypal.com/paypalme/JetomitBio" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-white transition-colors duration-200">Donate</a>
           <span className="text-neutral-800 text-xs hidden sm:inline">●</span>
-          <Link href="/add" className="text-neutral-400 hover:text-white transition-colors duration-200">Add your lyrics</Link>
+          <Link href="/add" className="text-neutral-400 hover:text-white transition-colors duration-200">Distributors</Link>
+          <span className="text-neutral-800 text-xs hidden sm:inline">●</span>
+          <Link href="/upload" className="text-neutral-400 hover:text-white transition-colors duration-200">Upload Lyrics</Link>
           <span className="text-neutral-800 text-xs hidden sm:inline">●</span>
           <Link href="/terms" className="text-neutral-400 hover:text-white transition-colors duration-200">Terms of Service</Link>
         </div>

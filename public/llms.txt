@@ -1,0 +1,108 @@
+# TTMLLIB — The Open TTML Lyrics Library
+Developed by Jetomit-Bio (https://github.com/Jetomit-Bio)
+
+TTMLLIB is a high-performance open-source Next.js application and API built to parse, cache, store, and display synchronized lyrics in TTML (Timed Text Markup Language) and LRC formats.
+
+## Key Project Details & Links
+- Main Website: https://ttmllib.xyz (or local deployment)
+- Plain Text Database Dump (For AI Crawlers/LLMs): https://ttmllib.xyz/txt
+- Author GitHub: https://github.com/Jetomit-Bio
+- Donations: https://www.paypal.com/paypalme/JetomitBio
+- Official Distributor: SudoAPP (https://sudoapp.pro)
+
+## Architecture & Tech Stack
+- Frontend/Backend: Next.js (App Router, Server Actions, API routes)
+- Styling: Tailwind CSS v4
+- Database: MySQL
+- External Fallback: LRCLIB (https://lrclib.net) for caching uncached lyrics on-the-fly
+
+## Database Schema (MySQL)
+To run a local instance or set up the database, execute:
+
+```sql
+CREATE TABLE IF NOT EXISTS `tracks` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `title` VARCHAR(255) NOT NULL,
+  `artist` VARCHAR(255) NOT NULL,
+  `album` VARCHAR(255) NULL,
+  `duration` VARCHAR(50) NOT NULL,
+  `type` ENUM('Plain', 'Synced') NOT NULL,
+  `lyrics` TEXT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `distributor` VARCHAR(255) NULL,
+  `duration_seconds` INT DEFAULT 0,
+  `youtube_id` VARCHAR(255) NULL,
+  `lyrics_ttml` TEXT NULL,
+  `is_verified` TINYINT(1) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS `api_keys` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `api_key` VARCHAR(255) NOT NULL UNIQUE,
+  `owner` VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## API Reference
+
+### 1. Get Lyrics (with Fallback to LRCLIB)
+- **Endpoint:** `GET /api/get`
+- **Query Parameters:**
+  - `track_name` (required, string)
+  - `artist_name` (required, string)
+  - `album_name` (required, string)
+  - `duration` (required, integer, in seconds)
+- **Response Format:**
+  ```json
+  {
+    "id": 1,
+    "trackName": "Song Title",
+    "artistName": "Artist Name",
+    "albumName": "Album Name",
+    "duration": 222,
+    "instrumental": false,
+    "plainLyrics": "Plain text...",
+    "syncedLyrics": "[00:10.50] Synced...",
+    "lyricsTtml": "<tt>...</tt>",
+    "isVerified": true,
+    "distributor": "SudoAPP"
+  }
+  ```
+
+### 2. Get Cached Lyrics (No External Request)
+- **Endpoint:** `GET /api/get-cached`
+- **Query Parameters:** Same as `/api/get`
+- **Response Format:** Same as `/api/get`
+
+### 3. Get Lyrics by Database ID
+- **Endpoint:** `GET /api/get/[id]`
+- **Response Format:** Same as `/api/get`
+
+### 4. Search Tracks
+- **Endpoint:** `GET /api/search`
+- **Query Parameters:**
+  - `q` (string, fulltext query across title, artist, and album)
+  - `track_name` (string, title filter)
+  - `artist_name` (optional, string, artist filter)
+  - `album_name` (optional, string, album filter)
+  - `verified` (optional, string/boolean): Filter by verified status (`1`/`true` or `0`/`false`)
+  - `distributor` (optional, string): Filter by distributor name (case-insensitive)
+
+### 5. Ingest / Upload Track (Authorized)
+- **Endpoint:** `POST /api/upload`
+- **Headers:**
+  - `x-api-key`: Ingestion API Key (required)
+- **JSON Body:**
+  ```json
+  {
+    "distributor": "SudoAPP",
+    "title": "Song Title",
+    "artist": "Artist Name",
+    "album": "Album Name",
+    "duration_seconds": 222,
+    "youtube_id": "rI1lFh5xZM8",
+    "lyrics_plain": "Plain text lyrics...",
+    "lyrics_ttml": "<tt>...</tt>"
+  }
+  ```
